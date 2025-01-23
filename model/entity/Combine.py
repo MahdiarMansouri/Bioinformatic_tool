@@ -27,10 +27,6 @@ class Combine:
                             outfile.write(line)
 
     def combine_files(self, directory_path):
-        # Define the path to the directory containing the FASTA files
-        # todo: change to correct dir
-        # directory_path = r"C:\Users\mrnaj\PycharmProjects\NCBI_project_2\concatenate\result"
-
         # Define the output file path
         output_file = os.path.join(directory_path, "combined_fasta.fasta")
 

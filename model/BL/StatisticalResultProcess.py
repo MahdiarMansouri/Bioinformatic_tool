@@ -43,6 +43,5 @@ class StatisticalResultProcess:
             gene_presence_percentage, diversity_count, diversity_percentage, distinct_gene_presence_count)
 
             self.db.insert_statistical_result_table(statistical_report)
-            time.sleep(3)
 
         print("Analysis complete.")
