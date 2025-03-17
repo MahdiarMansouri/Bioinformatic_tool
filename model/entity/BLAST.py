@@ -15,8 +15,9 @@ class BLAST:
 
     def blast(self, gene):
         # Perform BLAST search
+        os.makedirs(f"results/blast_results/{gene.name}", exist_ok=True)
         result = subprocess.run(
-            ["blastn", "-query", f"{gene.file_path}", "-db", "wgs/WGS", "-out", fr"results/blast_results/{gene.name}.csv", "-outfmt",
+            ["blastn", "-query", f"{gene.file_path}", "-db", "wgs/WGS", "-out", fr"results/blast_results/{gene.name}/{gene.name}.csv", "-outfmt",
              "10 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen sstrand qframe sframe qseq sseq"],
             capture_output=True, text=True
         )

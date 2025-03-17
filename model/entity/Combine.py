@@ -1,13 +1,14 @@
 import os
 import re
+import shutil
 
 from model.DB.db_model import DB
 
 
 class Combine:
     def create_combined_wgs(self):
-        db = DB()
-        genomes = db.search_all_genomes()
+        self.db = DB()
+        genomes = self.db.search_all_genomes()
 
         genome_dict = {}
         for genome in genomes:
@@ -83,7 +84,17 @@ class Combine:
             with open(new_file_path, 'w') as output_file:
                 for match in matches:
                     output_file.write(match + '\n')
+
     def create_results_folder(self):
         os.makedirs("results", exist_ok=True)
         os.makedirs("results/analysis_results", exist_ok=True)
         os.makedirs("results/blast_results", exist_ok=True)
+
+    def create_result_folders_with_seqs(self, gene_name):
+        for folder_name in ["cutoff", "duplicate"]:
+            seq_paths = self.db.search_seq_paths_by_gene_name_with_cutoff_or_duplicate_1(folder_name, gene_name)
+            destination_folder = f"results/blast_results/{gene_name}/{folder_name}"
+            os.makedirs(destination_folder, exist_ok=True)
+
+            for seq_path in seq_paths:
+                shutil.copy(seq_path, destination_folder)

@@ -190,8 +190,11 @@ class DB:
 
         base_folder_path = r"results/blast_results"
 
+        table_folder_path = f"{table_name}"
         folder_path = f"{table_name}_seq_folder"
-        os.makedirs(os.path.join(base_folder_path, folder_path), exist_ok=True)
+        os.makedirs(os.path.join(base_folder_path, table_folder_path), exist_ok=True)
+        full_path = os.path.join(base_folder_path, table_folder_path, folder_path)
+        os.makedirs(full_path, exist_ok=True)
 
         # Iterate through each row in the DataFrame
         for idx, row in df.iterrows():
@@ -211,8 +214,8 @@ class DB:
                 continue
 
             # Include genome_name in the file names
-            qseq_path = os.path.join(base_folder_path, folder_path, f"{table_name}_{genome_name}_qseq_{idx}.fasta")
-            sseq_path = os.path.join(base_folder_path, folder_path, f"{table_name}_{genome_name}_sseq_{idx}.fasta")
+            qseq_path = os.path.join(full_path, f"{table_name}_{genome_name}_qseq_{idx}.fasta")
+            sseq_path = os.path.join(full_path, f"{table_name}_{genome_name}_sseq_{idx}.fasta")
 
             with open(qseq_path, 'w') as qf:
                 qf.write(row[17])
@@ -273,12 +276,14 @@ class DB:
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
 
-        base_folder_path = r"results/blast_results"
+        base_folder_path = r"results\blast_results"
+
+        table_folder_path = f"{gene_name}"
         folder_path = f"{gene_name}_seq_folder"
-        full_path = os.path.join(base_folder_path, folder_path)
+        full_path = os.path.join(base_folder_path, table_folder_path, folder_path)
         os.makedirs(full_path, exist_ok=True)
 
-        df = pd.read_csv(fr'results/blast_results/{gene_name}.csv', header=None)
+        df = pd.read_csv(fr'results/blast_results/{gene_name}/{gene_name}.csv', header=None)
 
         self.connect()
         # Iterate through each row in the DataFrame
@@ -457,6 +462,16 @@ class DB:
 
         self.disconnect()
         return genomes_list
+
+    def search_seq_paths_by_gene_name_with_cutoff_or_duplicate_1(self, condition, gene_name):
+        self.connect()
+        self.cursor.execute(f"SELECT sseq_path FROM {gene_name} WHERE {condition}=1")
+        seq_paths = self.cursor.fetchall()
+        self.disconnect()
+        seq_paths_list = []
+        for seq_path in seq_paths:
+            seq_paths_list.append(seq_path[0])
+        return seq_paths_list
 
     def search_genome_by_id(self, id):
         self.connect()

@@ -53,13 +53,15 @@ class MainProcess:
             db.create_result_table(gene.name)
             time.sleep(1)
             db.insert_blast_result(gene.name)
-            # db.create_and_insert_blast_results(gene.name, gene.name)
             print(f"-----------> cutoff started")
             db.update_cutoff_column(gene.name, identity, coverage)
             print(f"-----------> duplicate started")
             total_blasts_duplicate = dc.update_duplicate_column(gene.name)
             print(f"-----------> duplicate finished with {total_blasts_duplicate} blasts")
+            print(f"-----------> creating result folders for cutoff and duplicate seqs ")
+            combine.create_result_folders_with_seqs(gene.name)
             print('Process Duration: {}'.format(time.time() - s1), end="\n\n")
+
 
         print("------------> Analysis Started <------------")
         statistical_analysis = StatisticalResultProcess()
